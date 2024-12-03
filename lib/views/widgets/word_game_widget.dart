@@ -1,6 +1,10 @@
-import 'package:flutter/material.dart';
-
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:soletra_app/bloc/word_game_bloc.dart';
 
 class WordGameUI extends StatefulWidget {
   const WordGameUI({super.key});
@@ -8,6 +12,7 @@ class WordGameUI extends StatefulWidget {
   @override
   State<WordGameUI> createState() => _WordGameUIState();
 }
+
 class _WordGameUIState extends State<WordGameUI> {
   final _controller = TextEditingController();
 
@@ -16,6 +21,7 @@ class _WordGameUIState extends State<WordGameUI> {
   @override
   void initState() {
     super.initState();
+    context.read<WordGameBloc>().add(WordGameStarted());
     Future.delayed(Duration.zero, () {
       _focusNode.requestFocus();
     });
@@ -27,10 +33,10 @@ class _WordGameUIState extends State<WordGameUI> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            onPressed: (){
-              // Scaffold.of(context).openDrawer();
-            },
-            icon: const Icon(Icons.help_outline)),
+              onPressed: () {
+                // Scaffold.of(context).openDrawer();
+              },
+              icon: const Icon(Icons.help_outline)),
           actions: const [
             Icon(Icons.more_vert),
           ],
@@ -38,7 +44,6 @@ class _WordGameUIState extends State<WordGameUI> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            
             const Spacer(),
             Center(
               child: TextField(
@@ -54,53 +59,63 @@ class _WordGameUIState extends State<WordGameUI> {
                 decoration: const InputDecoration(border: InputBorder.none),
               ),
             ),
-
             const SizedBox(
               height: 36,
             ),
-
-            SizedBox(
-              width: MediaQuery.sizeOf(context).width,
-              height: MediaQuery.sizeOf(context).height * 0.2,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Circle for the center letter
-                  GestureDetector(
-                    onTap: () {
-                      _controller.text = '${_controller.text}X';
-                    },
-                    child: const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.teal,
-                      child: Text(
-                        'X',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+            BlocBuilder<WordGameBloc, WordGameState>(
+              builder: (context, state) {
+                if (state is WordGameLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is WordGameFailure) {
+                  return Center(
+                    child: Text(state.message),
+                  );
+                }
+                if (state is WordGameSuccess) {
+                  final letters = state.wordGameModel.outerLetters;
+                  final centerLetter = state.wordGameModel.centralLetter;
+                  return SizedBox(
+                    width: MediaQuery.sizeOf(context).width,
+                    height: MediaQuery.sizeOf(context).height * 0.2,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Circle for the center letter
+                        GestureDetector(
+                          onTap: () {
+                            _controller.text =
+                                '${_controller.text}$centerLetter';
+                          },
+                          child: CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.teal,
+                            child: Text(
+                              centerLetter.toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        OuterLettersWidget(
+                          letters: letters,
+                          onTap: (value) {
+                            _controller.text = '${_controller.text}$value';
+                          },
+                        )
+                      ],
                     ),
-                  ),
-
-                  // Surrounding letters
-                  ..._buildOuterLetters([
-                    'A',
-                    'R',
-                    'P',
-                    'O',
-                    'M',
-                    'I',
-                  ], context, (value) {
-                    _controller.text = '${_controller.text}$value';
-                  }),
-                ],
-              ),
+                  );
+                }
+                return const SizedBox();
+              },
             ),
-
             const Spacer(),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -136,11 +151,12 @@ class _WordGameUIState extends State<WordGameUI> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text('Confirmar', ),
+                  child: const Text(
+                    'Confirmar',
+                  ),
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
             Column(
               children: [
@@ -169,7 +185,6 @@ class _WordGameUIState extends State<WordGameUI> {
                               color: Colors.teal,
                             ),
                           ),
-                          
                         ],
                       ),
                     ],
@@ -185,40 +200,65 @@ class _WordGameUIState extends State<WordGameUI> {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   width: MediaQuery.sizeOf(context).width,
                   height: MediaQuery.sizeOf(context).height * 0.1,
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: .5,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 4,
-                    ),
-                    itemCount: 9, // Adjust according to your word count
-                    itemBuilder: (context, index) {
-                      return Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade400),
+                  child: BlocSelector<WordGameBloc, WordGameState, WordGameSuccess?>(
+                    selector: (state) {
+                      if (state is WordGameSuccess) {
+                        return state;
+                      }
+                      return null;
+                    },
+                    builder: (context, state) {
+                      if (state == null) {
+                        return const SizedBox();
+                      }
+                      final words = state.wordGameModel.words;
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: .5,
+                          crossAxisSpacing: 4,
+                          mainAxisSpacing: 4,
                         ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          '${(index % 3) + 4} letras',
-                          style: TextStyle(
-                              color: Colors.grey.shade400, fontSize: 16),
-                        ),
+                        itemCount: words.length, // Adjust according to your word count
+                        itemBuilder: (context, index) {
+                          return Container(
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey.shade400),
+                            ),
+                            alignment: Alignment.center,
+                            child: Builder(
+                              builder: (context) {
+                                if (words[index].isFound) {
+                                  return Text(
+                                    words[index].word,
+                                    style: const TextStyle(
+                                      color: Colors.teal,
+                                      fontSize: 16,
+                                    ),
+                                  );
+                                }
+                                return Text(
+                                  '${words[index].word.length} letras',
+                                  style: TextStyle(
+                                      color: Colors.grey.shade400, fontSize: 16),
+                                );
+                              }
+                            ),
+                          );
+                        },
                       );
                     },
                   ),
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
           ],
-          
         ),
         drawer: Placeholder(),
       ),
@@ -257,5 +297,51 @@ class _WordGameUIState extends State<WordGameUI> {
         ),
       );
     });
+  }
+}
+
+class OuterLettersWidget extends StatelessWidget {
+  final List<String> letters;
+  final Function(String) onTap;
+  const OuterLettersWidget({
+    super.key,
+    required this.letters,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const double radius = 75;
+    final double angleIncrement = (2 * math.pi) / letters.length;
+    const double avatarRadius = 28;
+    return Stack(
+      alignment: Alignment.center,
+      children: List.generate(letters.length, (index) {
+        final angle = angleIncrement * index;
+        final double dx = radius * math.cos(angle);
+        final double dy = radius * math.sin(angle);
+
+        return Positioned(
+          left: ((MediaQuery.sizeOf(context).width * 0.5) - avatarRadius) + dx,
+          top: ((MediaQuery.sizeOf(context).height * 0.1) - avatarRadius) + dy,
+          child: GestureDetector(
+            onTap: () {
+              onTap(letters[index]);
+            },
+            child: CircleAvatar(
+              radius: avatarRadius,
+              backgroundColor: const Color(0xFFE4E7EC),
+              child: Text(
+                letters[index].toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
   }
 }
