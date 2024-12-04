@@ -7,8 +7,9 @@ final class WordGameInitial extends WordGameState {}
 final class WordGameLoading extends WordGameState {}
 final class WordGameSuccess extends WordGameState {
   final List<WordModel> wordGameModel;
+  final int index;
 
-  WordGameSuccess({required this.wordGameModel});
+  WordGameSuccess({required this.wordGameModel ,required this.index});
 }
 class WordGameFailedAttempt extends WordGameState {
   final List<WordModel> wordGameModel;

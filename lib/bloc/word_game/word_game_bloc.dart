@@ -26,7 +26,7 @@ class WordGameBloc extends Bloc<WordGameEvent, WordGameState> {
   List<WordModel> _stateCache = [];
   void _mapWordGameStartedToState(Emitter<WordGameState> emit) async {
     _stateCache = await _wordGameRepository.getWordGame();
-    emit(WordGameSuccess(wordGameModel: _stateCache));
+    emit(WordGameSuccess(wordGameModel: _stateCache, index: 0));
   }
 
   void _mapWordGameSubmittedToState(
@@ -39,7 +39,7 @@ class WordGameBloc extends Bloc<WordGameEvent, WordGameState> {
         (element) => element.word.toLowerCase() == event.word.toLowerCase());
     if (index != -1) {
       _stateCache[index] = _stateCache[index].setAsFound();
-    emit(WordGameSuccess(wordGameModel: _stateCache));
+    emit(WordGameSuccess(wordGameModel: _stateCache, index: index));
     return;
     }
     emit(WordGameFailedAttempt(wordGameModel: _stateCache));
