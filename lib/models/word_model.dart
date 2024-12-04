@@ -8,7 +8,7 @@ class WordModel {
   final bool isFound;
   final List<String> label;
 
-  WordModel({required this.word, required this.score, required this.pangram, required this.label, this.isFound = true});
+  WordModel({required this.word, required this.score, required this.pangram, required this.label, this.isFound = false});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -39,4 +39,9 @@ class WordModel {
   String toJson() => json.encode(toMap());
 
   factory WordModel.fromJson(String source) => WordModel.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
+extension WordModelListExtension on List<WordModel> {
+  int get totalScore => where((e)=> e.isFound).map((e) => e.score).fold(0, (a, b) => a + b);
+  double get progress => totalScore/map((e) => e.score).fold(0, (a, b) => a + b);
 }
