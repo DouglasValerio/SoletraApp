@@ -1,4 +1,3 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:pubnub/pubnub.dart';
@@ -17,12 +16,15 @@ class WordGameBloc extends Bloc<WordGameEvent, WordGameState> {
   WordGameBloc({
     required WordGameRepository wordGameRepository,
     required LiveGameRepository liveGameRepository,
-  })  : _liveGameRepository = liveGameRepository, _wordGameRepository = wordGameRepository,
+  })  : _liveGameRepository = liveGameRepository,
+        _wordGameRepository = wordGameRepository,
         super(WordGameInitial()) {
-    final stream = _liveGameRepository.liveGame();
-    stream.listen((event) async {
-      add(WordGameScoreFromPartner(word: event.word));
+    _liveGameRepository.liveGame().then((stream) {
+      stream.listen((event) async {
+        add(WordGameScoreFromPartner(word: event.word));
+      });
     });
+
     on<WordGameEvent>((event, emit) async {
       if (event is WordGameStarted) {
         await _mapWordGameStartedToState(emit);
@@ -60,11 +62,11 @@ class WordGameBloc extends Bloc<WordGameEvent, WordGameState> {
         return;
       }
       _stateCache[index] = _stateCache[index].setAsFound();
-     _liveGameRepository.sendWord(_stateCache[index]);
+      _liveGameRepository.sendWord(_stateCache[index]);
       emit(WordFindByPlayer(wordGameModel: _stateCache, index: index));
       return;
     }
-    
+
     emit(WordNotIncludedOnGame(wordGameModel: _stateCache));
   }
 
@@ -78,7 +80,11 @@ class WordGameBloc extends Bloc<WordGameEvent, WordGameState> {
     if (index != -1) {
       _stateCache[index] = _stateCache[index].setAsFound();
 
-      emit(WordFoundByPartner(wordGameModel: _stateCache, index: index, message: "Palavra ${event.word.toUpperCase()} encontrada pelo seu parceiro"));
+      emit(WordFoundByPartner(
+          wordGameModel: _stateCache,
+          index: index,
+          message:
+              "Palavra ${event.word.toUpperCase()} encontrada pelo seu parceiro"));
       return;
     }
   }
