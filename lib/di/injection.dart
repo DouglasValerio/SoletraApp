@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:soletra_app/bloc/letters/letters_bloc.dart';
 import 'package:soletra_app/bloc/word_game/word_game_bloc.dart';
-import 'package:soletra_app/http/dio_client.dart';
+import 'package:soletra_app/external/http/dio_client.dart';
+import 'package:soletra_app/external/pub_sub/pub_nub_service.dart';
+import 'package:soletra_app/external/pub_sub/pub_nub_service_impl.dart';
 import 'package:soletra_app/repositories/live_game_repository.dart';
 import 'package:soletra_app/repositories/live_game_repository_impl.dart';
 import 'package:soletra_app/repositories/word_game_repository.dart';
@@ -25,8 +27,12 @@ Future<void> _wordGameInjection() async {
       dioClient: injector<DioClient>(),
     ),
   );
-  injector.registerFactory<LiveGameRepository>(() => LiveGameRepositoryImpl());
+  injector.registerFactory<LiveGameRepository>(() => LiveGameRepositoryImpl(
+    pubNubService: injector<PubNubService>(),
+  ));
   injector.registerFactory<DioClient>(() => DioClient());
+
+  injector.registerFactory<PubNubService>(() => PubNubServiceImpl());
 }
 
 Future<void>_lettersInjection ()async{

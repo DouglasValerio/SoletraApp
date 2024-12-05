@@ -1,4 +1,4 @@
-import 'package:soletra_app/http/dio_client.dart';
+import 'package:soletra_app/external/http/dio_client.dart';
 import 'package:soletra_app/models/letters_model.dart';
 import 'package:soletra_app/repositories/word_game_repository.dart';
 
