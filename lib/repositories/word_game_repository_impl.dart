@@ -5,7 +5,9 @@ import 'package:soletra_app/repositories/word_game_repository.dart';
 import '../models/models.dart';
 
 class WordGameRepositoryImpl implements WordGameRepository {
-  final DioClient _dioClient = DioClient();
+  final DioClient _dioClient;
+
+  WordGameRepositoryImpl({required DioClient dioClient}) : _dioClient = dioClient;
   @override
   Future<List<WordModel>> getWordGame() async {
     try {

@@ -6,9 +6,9 @@ class DioClient {
 
   DioClient() {
     _dio = Dio(BaseOptions(
-      baseUrl: AppEnv.apiUrl,  
-      connectTimeout: Duration(seconds: 10),
-      receiveTimeout: Duration(seconds: 10), 
+      baseUrl: AppEnv.apiUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
     ));
 
     _dio.interceptors.add(InterceptorsWrapper(
@@ -27,7 +27,8 @@ class DioClient {
     ));
   }
 
-  Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) async {
+  Future<Response> get(String path,
+      {Map<String, dynamic>? queryParameters}) async {
     try {
       return await _dio.get(path, queryParameters: queryParameters);
     } catch (e) {
