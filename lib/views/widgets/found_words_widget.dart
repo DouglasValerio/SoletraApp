@@ -13,11 +13,17 @@ class FoundWordsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<WordGameBloc, WordGameState>(
       listener: (context, state) {
-        if (state is WordGameSuccess) {
-          showToast(context, "Palavra encontrada", ToastificationType.success);
+        if (state is WordFindByPlayer ) {
+          showToast(context, state.message, ToastificationType.success);
         }
-        if (state is WordGameFailedAttempt) {
-          showToast(context, "Palavra não encontrada", ToastificationType.error);
+        if (state is WordAlreadyFound ) {
+          showToast(context, state.message, ToastificationType.warning);
+        }
+        if (state is WordFoundByPartner) {
+          showToast(context, state.message, ToastificationType.info);
+        }
+        if (state is WordNotIncludedOnGame) {
+          showToast(context, state.message, ToastificationType.error);
         }
       },
       builder: (context, state) {
@@ -35,10 +41,6 @@ class FoundWordsWidget extends StatelessWidget {
           final words = state.wordGameModel;
           return WordGameDisplayWidget(words: words);
         }
-        if (state is WordGameFailedAttempt) {
-          final words = state.wordGameModel;
-          return WordGameDisplayWidget(words: words);
-        }
         return const SizedBox();
       },
     );
@@ -48,7 +50,6 @@ class FoundWordsWidget extends StatelessWidget {
     toastification.show(
       context: context,
       type: type,
-      // title: Text(title),
       description: Text(description),
       primaryColor: Colors.white,
       autoCloseDuration: const Duration(milliseconds: 1500),
@@ -56,7 +57,7 @@ class FoundWordsWidget extends StatelessWidget {
         color: type == ToastificationType.success
             ? Colors.teal
             : type == ToastificationType.info
-                ? Colors.blue
+                ? Colors.blue.shade800
                 : type == ToastificationType.warning
                     ? Colors.orange
                     : Colors.red,
@@ -65,7 +66,7 @@ class FoundWordsWidget extends StatelessWidget {
       backgroundColor: type == ToastificationType.success
           ? Colors.teal
           : type == ToastificationType.info
-              ? Colors.blue
+              ? Colors.blue.shade800
               : type == ToastificationType.warning
                   ? Colors.orange
                   : Colors.red,

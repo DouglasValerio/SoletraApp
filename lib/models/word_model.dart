@@ -8,7 +8,12 @@ class WordModel {
   final bool isFound;
   final List<String> label;
 
-  WordModel({required this.word, required this.score, required this.pangram, required this.label, this.isFound = false});
+  WordModel(
+      {required this.word,
+      required this.score,
+      required this.pangram,
+      required this.label,
+      this.isFound = false});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -18,12 +23,13 @@ class WordModel {
       'label': label,
     };
   }
+
   WordModel setAsFound() {
     return WordModel(
-      word:  word,
+      word: word,
       score: score,
-      pangram:pangram,
-      label:label,
+      pangram: pangram,
+      label: label,
       isFound: true,
     );
   }
@@ -33,15 +39,27 @@ class WordModel {
       word: map['word'] as String,
       score: map['score'] as int,
       pangram: map['pangram'] as bool,
-      label: (map['label'] as List<dynamic>).map((e) => e as String).toList(),);
+      label: (map['label'] as List<dynamic>).map((e) => e as String).toList(),
+    );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory WordModel.fromJson(String source) => WordModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory WordModel.fromJson(String source) =>
+      WordModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 extension WordModelListExtension on List<WordModel> {
-  int get totalScore => where((e)=> e.isFound).map((e) => e.score).fold(0, (a, b) => a + b);
-  double get progress => totalScore/map((e) => e.score).fold(0, (a, b) => a + b);
+  int get totalScore {
+    final list = where((e) => e.isFound);
+    return list.isEmpty
+        ? 0
+        : list.map((e) => e.score).fold(0, (a, b) => a + b);
+  }
+
+  double get progress {
+    if (isEmpty) return 0;
+    return  totalScore / map((e) => e.score).fold(0, (a, b) => a + b);
+  }
+     
 }

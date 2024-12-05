@@ -9,3 +9,8 @@ final class WordGameSubmitted extends WordGameEvent {
 
   WordGameSubmitted({required this.word});
 }
+final class WordGameScoreFromPartner extends WordGameEvent {
+  final String word;
+  
+  WordGameScoreFromPartner({required this.word});
+}

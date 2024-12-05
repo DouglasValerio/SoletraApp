@@ -11,25 +11,25 @@ class LettersBloc extends Bloc<LettersEvent, LettersState> {
   LettersBloc({required WordGameRepository wordGameRepository})
       : _wordGameRepository = wordGameRepository,
         super(LettersInitial()) {
-    on<LettersEvent>((event, emit) {
+    on<LettersEvent>((event, emit) async {
       if (event is LettersStarted) {
-        _mapLettersStartedToState(emit);
+        await _mapLettersStartedToState(emit);
       }
       if (event is LettersRefresh) {
-        _mapLettersRefreshToState(emit);
+        await _mapLettersRefreshToState(emit);
       }
     });
   }
   LettersModel? _stateCache;
 
-  void _mapLettersStartedToState(Emitter<LettersState> emit) async {
+  Future<void> _mapLettersStartedToState(Emitter<LettersState> emit) async {
     emit(LettersLoading());
     final lettersModel = await _wordGameRepository.getAvailableLetters();
     _stateCache = lettersModel;
     emit(LettersSuccess(lettersModel: lettersModel));
   }
 
-  void _mapLettersRefreshToState(Emitter<LettersState> emit) async {
+  Future<void> _mapLettersRefreshToState(Emitter<LettersState> emit) async {
     emit(LettersLoading());
     _stateCache ??= await _wordGameRepository.getAvailableLetters();
     _stateCache = _stateCache!.shuffleLetters();

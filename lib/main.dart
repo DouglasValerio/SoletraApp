@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:soletra_app/bloc/letters/letters_bloc.dart';
+import 'package:soletra_app/repositories/live_game_repository_impl.dart';
 import 'package:soletra_app/repositories/word_game_repository_impl.dart';
 
 import 'package:soletra_app/views/widgets/word_game_widget.dart';
@@ -21,13 +22,12 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<WordGameBloc>(
           create: (context) => WordGameBloc(
-            wordGameRepository: WordGameRepositoryImpl()
-          ),
+              wordGameRepository: WordGameRepositoryImpl(),
+              liveGameRepository: LiveGameRepositoryImpl()),
         ),
         BlocProvider<LettersBloc>(
-          create: (context) => LettersBloc(
-            wordGameRepository: WordGameRepositoryImpl()
-          ),
+          create: (context) =>
+              LettersBloc(wordGameRepository: WordGameRepositoryImpl()),
         ),
       ],
       child: MaterialApp(
