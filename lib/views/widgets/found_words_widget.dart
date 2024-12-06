@@ -13,14 +13,14 @@ class FoundWordsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<WordGameBloc, WordGameState>(
       listener: (context, state) {
-        if (state is WordFindByPlayer ) {
+        if (state is WordFindByPlayer) {
           showToast(context, state.message, ToastificationType.success);
         }
-        if (state is WordAlreadyFound ) {
+        if (state is WordAlreadyFound) {
           showToast(context, state.message, ToastificationType.warning);
         }
         if (state is WordFoundByPartner) {
-          showToast(context, state.message, ToastificationType.info);
+          showToast(context, state.message, ToastificationType.info, duration: const Duration(milliseconds: 3000));
         }
         if (state is WordNotIncludedOnGame) {
           showToast(context, state.message, ToastificationType.error);
@@ -45,14 +45,16 @@ class FoundWordsWidget extends StatelessWidget {
       },
     );
   }
-  void showToast(BuildContext context,  String description,
-      ToastificationType type) {
+
+  void showToast(
+      BuildContext context, String description, ToastificationType type,
+      {Duration duration = const Duration(milliseconds: 1500)}) {
     toastification.show(
       context: context,
       type: type,
       description: Text(description),
       primaryColor: Colors.white,
-      autoCloseDuration: const Duration(milliseconds: 1500),
+      autoCloseDuration: duration,
       progressBarTheme: ProgressIndicatorThemeData(
         color: type == ToastificationType.success
             ? Colors.teal

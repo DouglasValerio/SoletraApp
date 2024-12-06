@@ -89,7 +89,7 @@ class WordGameDisplayWidget extends StatelessWidget {
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4,
                 ),
-                itemCount: words.length, // Adjust according to your word count
+                itemCount: words.length,
                 itemBuilder: (context, index) {
                   return Container(
                     height: 60,

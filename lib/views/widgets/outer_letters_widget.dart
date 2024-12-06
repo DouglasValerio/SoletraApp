@@ -27,7 +27,7 @@ class OuterLettersWidget extends StatelessWidget {
 
         return Positioned(
           left: ((MediaQuery.sizeOf(context).width * 0.5) - avatarRadius) + dx,
-          top: ((MediaQuery.sizeOf(context).height * 0.1) - avatarRadius) + dy,
+          top: ((MediaQuery.sizeOf(context).height * 0.15) - avatarRadius) + dy,
           child: InkWell(
             customBorder: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),

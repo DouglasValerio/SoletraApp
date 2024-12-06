@@ -76,7 +76,7 @@ class _WordGameUIState extends State<WordGameUI> {
                   final centerLetter = state.lettersModel.centralLetter;
                   return SizedBox(
                     width: MediaQuery.sizeOf(context).width,
-                    height: MediaQuery.sizeOf(context).height * 0.2,
+                    height: MediaQuery.sizeOf(context).height * 0.3,
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
