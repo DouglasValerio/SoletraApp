@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:soletra_app/external/sensors/accelerometer_service.dart';
 import 'package:soletra_app/models/letters_model.dart';
 import 'package:soletra_app/repositories/word_game_repository.dart';
 
@@ -8,9 +9,16 @@ part 'letters_state.dart';
 
 class LettersBloc extends Bloc<LettersEvent, LettersState> {
   final WordGameRepository _wordGameRepository;
-  LettersBloc({required WordGameRepository wordGameRepository})
-      : _wordGameRepository = wordGameRepository,
+  final AccelerometerService _accelerometerService;
+  LettersBloc({required WordGameRepository wordGameRepository, required AccelerometerService accelerometerService})
+      : _wordGameRepository = wordGameRepository,_accelerometerService = accelerometerService,
         super(LettersInitial()) {
+    _accelerometerService.accelerometerEvents().listen((event) {
+      if(event.x.abs() > 5 && event.y.abs() > 5){
+        add(LettersRefresh());
+      }
+    });
+
     on<LettersEvent>((event, emit) async {
       if (event is LettersStarted) {
         await _mapLettersStartedToState(emit);

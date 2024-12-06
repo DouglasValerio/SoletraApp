@@ -13,13 +13,19 @@
             "name": "soletra_app (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "args": [
+                "--dart-define-from-file","env.local.json"
+            ]
         },
         {
             "name": "soletra_app (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "args": [
+                "--dart-define-from-file","env.local.json"
+            ]
         }
     ]
 }

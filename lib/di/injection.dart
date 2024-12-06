@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:soletra_app/bloc/letters/letters_bloc.dart';
@@ -5,6 +6,8 @@ import 'package:soletra_app/bloc/word_game/word_game_bloc.dart';
 import 'package:soletra_app/external/http/dio_client.dart';
 import 'package:soletra_app/external/pub_sub/pub_nub_service.dart';
 import 'package:soletra_app/external/pub_sub/pub_nub_service_impl.dart';
+import 'package:soletra_app/external/sensors/accelerometer_service.dart';
+import 'package:soletra_app/external/sensors/accelerometer_service_impl.dart';
 import 'package:soletra_app/external/storage/storage_service.dart';
 import 'package:soletra_app/external/storage/storage_service_impl.dart';
 import 'package:soletra_app/repositories/live_game_repository.dart';
@@ -45,15 +48,18 @@ Future<void> _lettersInjection() async {
   injector.registerLazySingleton<LettersBloc>(
     () => LettersBloc(
       wordGameRepository: injector<WordGameRepository>(),
+      accelerometerService: injector<AccelerometerService>(),
     ),
   );
+  injector.registerFactory<AccelerometerService>(() => AccelerometerServiceImpl(
+      platform:
+          const MethodChannel("info.pos-mobile-flutter-utfpr/accelerometer")));
 }
 
 Future<void> _storageInjection() async {
   final box = await Hive.openBox('soletra_box');
   injector.registerSingletonAsync<StorageService>(
     () async {
-       
       return StorageServiceImpl(box: box);
     },
   );
