@@ -20,7 +20,8 @@ class FoundWordsWidget extends StatelessWidget {
           showToast(context, state.message, ToastificationType.warning);
         }
         if (state is WordFoundByPartner) {
-          showToast(context, state.message, ToastificationType.info, duration: const Duration(milliseconds: 3000));
+          showToast(context, state.message, ToastificationType.info,
+              duration: const Duration(milliseconds: 3000));
         }
         if (state is WordNotIncludedOnGame) {
           showToast(context, state.message, ToastificationType.error);
@@ -49,30 +50,23 @@ class FoundWordsWidget extends StatelessWidget {
   void showToast(
       BuildContext context, String description, ToastificationType type,
       {Duration duration = const Duration(milliseconds: 1500)}) {
+    final color = type == ToastificationType.success
+        ? Theme.of(context).colorScheme.primary
+        : type == ToastificationType.info
+            ? Colors.blue.shade800
+            : Theme.of(context).colorScheme.error;
     toastification.show(
       context: context,
       type: type,
       description: Text(description),
-      primaryColor: Colors.white,
+      primaryColor: Theme.of(context).colorScheme.onPrimary,
       autoCloseDuration: duration,
       progressBarTheme: ProgressIndicatorThemeData(
-        color: type == ToastificationType.success
-            ? Colors.teal
-            : type == ToastificationType.info
-                ? Colors.blue.shade800
-                : type == ToastificationType.warning
-                    ? Colors.orange
-                    : Colors.red,
+        color: color,
       ),
       showProgressBar: true,
-      backgroundColor: type == ToastificationType.success
-          ? Colors.teal
-          : type == ToastificationType.info
-              ? Colors.blue.shade800
-              : type == ToastificationType.warning
-                  ? Colors.orange
-                  : Colors.red,
-      foregroundColor: Colors.white,
+      backgroundColor: color,
+      foregroundColor: Theme.of(context).colorScheme.onPrimary,
     );
   }
 }

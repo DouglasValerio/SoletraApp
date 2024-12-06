@@ -87,11 +87,12 @@ class _WordGameUIState extends State<WordGameUI> {
                           },
                           child: CircleAvatar(
                             radius: 30,
-                            backgroundColor: Colors.teal,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
                             child: Text(
                               centerLetter.toUpperCase(),
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -118,7 +119,7 @@ class _WordGameUIState extends State<WordGameUI> {
                 onPressed: () {
                   context.read<LettersBloc>().add(LettersRefresh());
                 },
-                color: Colors.teal,
+                color: Theme.of(context).colorScheme.primary,
                 icon: const Icon(Icons.refresh_outlined),
               ),
             ),
@@ -136,9 +137,9 @@ class _WordGameUIState extends State<WordGameUI> {
                     _controller.clear();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade300,
+                    backgroundColor: Theme.of(context).colorScheme.tertiary,
                     textStyle: const TextStyle(fontWeight: FontWeight.w700),
-                    foregroundColor: Colors.black,
+                    foregroundColor: Theme.of(context).colorScheme.onTertiary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -155,8 +156,8 @@ class _WordGameUIState extends State<WordGameUI> {
                     _controller.clear();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     textStyle: const TextStyle(fontWeight: FontWeight.w700),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
