@@ -5,7 +5,6 @@ import 'package:soletra_app/external/storage/storage_service.dart';
 import 'package:soletra_app/models/word_model.dart';
 import 'package:soletra_app/repositories/live_game_repository.dart';
 
-const id = '25b1788f-3523-4a6c-a3d6-f2ab5feb213b';
 
 class LiveGameRepositoryImpl implements LiveGameRepository {
   final PubNubService pubNubService;
@@ -20,7 +19,7 @@ class LiveGameRepositoryImpl implements LiveGameRepository {
     final sessionId = await storageService.getSessionId();
     return pubNubService
         .liveGame(sessionId)
-        .where((event) => event.uuid.value != id)
+        .where((event) => event.uuid.value != sessionId)
         .map((event) {
       return WordModel.fromJson(event.payload);
     });
