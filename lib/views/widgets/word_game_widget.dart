@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:soletra_app/bloc/letters/letters_bloc.dart';
@@ -34,13 +33,14 @@ class _WordGameUIState extends State<WordGameUI> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                // Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(Icons.help_outline)),
-          actions: const [
-            Icon(Icons.more_vert),
+          actions: [
+            PopupMenuButton(
+              itemBuilder: (_) => [
+                const PopupMenuItem(value: 1, child: Text('Recomeçar')),
+              ],
+              onSelected: (value) =>
+                  context.read<WordGameBloc>().add(WordGameStarted()),
+            )
           ],
         ),
         body: Column(
@@ -173,7 +173,6 @@ class _WordGameUIState extends State<WordGameUI> {
             const SizedBox(height: 16),
           ],
         ),
-        drawer: Placeholder(),
       ),
     );
   }

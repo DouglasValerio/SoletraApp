@@ -36,10 +36,10 @@ class WordGameDisplayWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Iniciante',
+              Text(
+                words.progressLabel,
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(width: 8),
               Row(
@@ -74,8 +74,8 @@ class WordGameDisplayWidget extends StatelessWidget {
           child: BlocConsumer<WordGameBloc, WordGameState>(
             listener: (context, state) {
               if (state is WordGameSuccess) {
-              _scrollToIndex(state.index);
-            }
+                _scrollToIndex(state.index);
+              }
             },
             builder: (context, state) {
               final int? i = (state is WordGameSuccess) ? state.index : null;
@@ -89,14 +89,15 @@ class WordGameDisplayWidget extends StatelessWidget {
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4,
                 ),
-                itemCount:
-                    words.length, // Adjust according to your word count
+                itemCount: words.length, // Adjust according to your word count
                 itemBuilder: (context, index) {
                   return Container(
                     height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: index==i?Colors.teal: Colors.grey.shade400),
+                      border: Border.all(
+                          color:
+                              index == i ? Colors.teal : Colors.grey.shade400),
                     ),
                     alignment: Alignment.center,
                     child: Builder(builder: (context) {

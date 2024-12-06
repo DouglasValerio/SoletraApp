@@ -52,14 +52,18 @@ class WordModel {
 extension WordModelListExtension on List<WordModel> {
   int get totalScore {
     final list = where((e) => e.isFound);
-    return list.isEmpty
-        ? 0
-        : list.map((e) => e.score).fold(0, (a, b) => a + b);
+    return list.isEmpty ? 0 : list.map((e) => e.score).fold(0, (a, b) => a + b);
   }
 
   double get progress {
     if (isEmpty) return 0;
-    return  totalScore / map((e) => e.score).fold(0, (a, b) => a + b);
+    return totalScore / map((e) => e.score).fold(0, (a, b) => a + b);
   }
-     
+
+  String get progressLabel {
+    if (progress < .3) return 'Iniciante';
+    if (progress < .6) return 'Aprendiz';
+    if (progress < .9) return 'Proficiente';
+    return 'Extraordinário';
+  }
 }

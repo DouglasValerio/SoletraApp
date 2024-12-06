@@ -28,7 +28,11 @@ class OuterLettersWidget extends StatelessWidget {
         return Positioned(
           left: ((MediaQuery.sizeOf(context).width * 0.5) - avatarRadius) + dx,
           top: ((MediaQuery.sizeOf(context).height * 0.1) - avatarRadius) + dy,
-          child: GestureDetector(
+          child: InkWell(
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            radius: 4,
             onTap: () {
               onTap(letters[index]);
             },
